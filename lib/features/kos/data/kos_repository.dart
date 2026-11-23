@@ -1,4 +1,5 @@
 import '../models/kos.dart';
+import 'kos_filters.dart';
 import 'kos_load_result.dart';
 import 'kos_remote_data_source.dart';
 
@@ -7,11 +8,18 @@ class KosRepository {
 
   final KosRemoteDataSource _remoteDataSource;
 
-  Stream<KosLoadResult<List<Kos>>> fetchList() async* {
+  Stream<KosLoadResult<List<Kos>>> fetchList([
+    KosFilters filters = const KosFilters(),
+  ]) async* {
     yield const KosLoadResult<List<Kos>>.loading();
 
+    if (!filters.isValid) {
+      yield const KosLoadResult<List<Kos>>.error('Rentang harga tidak valid.');
+      return;
+    }
+
     try {
-      final rows = await _remoteDataSource.fetchList();
+      final rows = await _remoteDataSource.fetchList(filters);
       if (rows.isEmpty) {
         yield const KosLoadResult<List<Kos>>.empty();
         return;
@@ -47,9 +55,7 @@ class KosRepository {
 
       yield KosLoadResult<Kos>.success(Kos.fromJson(row));
     } on FormatException {
-      yield const KosLoadResult<Kos>.error(
-        'Data kos tidak dapat dibaca.',
-      );
+      yield const KosLoadResult<Kos>.error('Data kos tidak dapat dibaca.');
     } catch (_) {
       yield const KosLoadResult<Kos>.error(
         'Tidak dapat terhubung ke Supabase.',

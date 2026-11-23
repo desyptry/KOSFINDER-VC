@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+import 'package:kosfinder_vc/features/kos/data/kos_filters.dart';
 import 'package:kosfinder_vc/features/kos/data/kos_remote_data_source.dart';
 import 'package:kosfinder_vc/features/kos/data/kos_repository.dart';
 import 'package:kosfinder_vc/features/kos/presentation/kos_detail_screen.dart';
@@ -14,7 +15,9 @@ class FakeKosRemoteDataSource implements KosRemoteDataSource {
   final Map<String, dynamic>? detailResult;
 
   @override
-  Future<List<Map<String, dynamic>>> fetchList() async => listResult;
+  Future<List<Map<String, dynamic>>> fetchList([
+    KosFilters filters = const KosFilters(),
+  ]) async => listResult;
 
   @override
   Future<Map<String, dynamic>?> fetchById(String id) async => detailResult;

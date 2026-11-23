@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kosfinder_vc/features/kos/data/kos_filters.dart';
 import 'package:kosfinder_vc/features/kos/data/kos_load_result.dart';
 import 'package:kosfinder_vc/features/kos/data/kos_remote_data_source.dart';
 import 'package:kosfinder_vc/features/kos/data/kos_repository.dart';
@@ -15,9 +16,13 @@ class FakeKosRemoteDataSource implements KosRemoteDataSource {
   final Map<String, dynamic>? detailResult;
   final bool throwOnList;
   final bool throwOnDetail;
+  KosFilters lastFilters = const KosFilters();
 
   @override
-  Future<List<Map<String, dynamic>>> fetchList() async {
+  Future<List<Map<String, dynamic>>> fetchList([
+    KosFilters filters = const KosFilters(),
+  ]) async {
+    lastFilters = filters;
     if (throwOnList) {
       throw Exception('network');
     }
