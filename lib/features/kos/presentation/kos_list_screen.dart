@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import '../data/kos_load_result.dart';
 import '../data/kos_repository.dart';
 import '../models/kos.dart';
+import '../providers/kos_filter_provider.dart';
 import 'kos_detail_screen.dart';
-import 'kos_list_provider.dart';
+import 'kos_filter_panel.dart';
 
 class KosListScreen extends StatelessWidget {
   const KosListScreen({super.key});
@@ -29,8 +30,13 @@ class KosListScreen extends StatelessWidget {
       body: repository == null
           ? const _ConfigurationError()
           : ChangeNotifierProvider(
-              create: (_) => KosListProvider(repository),
-              child: const _KosListBody(),
+              create: (_) => KosFilterProvider(repository),
+              child: const Column(
+                children: [
+                  KosFilterPanel(),
+                  Expanded(child: _KosListBody()),
+                ],
+              ),
             ),
     );
   }
@@ -58,7 +64,7 @@ class _KosListBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<KosListProvider>(
+    return Consumer<KosFilterProvider>(
       builder: (context, provider, _) {
         final state = provider.state;
 

@@ -9,15 +9,27 @@ import 'package:kosfinder_vc/features/kos/presentation/kos_detail_screen.dart';
 import 'package:kosfinder_vc/features/kos/presentation/kos_list_screen.dart';
 
 class FakeKosRemoteDataSource implements KosRemoteDataSource {
-  FakeKosRemoteDataSource({this.listResult = const [], this.detailResult});
+  FakeKosRemoteDataSource({
+    this.listResult = const [],
+    this.detailResult,
+    this.throwOnList = false,
+  });
 
   final List<Map<String, dynamic>> listResult;
   final Map<String, dynamic>? detailResult;
+  final bool throwOnList;
+  KosFilters lastFilters = const KosFilters();
 
   @override
   Future<List<Map<String, dynamic>>> fetchList([
     KosFilters filters = const KosFilters(),
-  ]) async => listResult;
+  ]) async {
+    lastFilters = filters;
+    if (throwOnList) {
+      throw Exception('network');
+    }
+    return listResult;
+  }
 
   @override
   Future<Map<String, dynamic>?> fetchById(String id) async => detailResult;
@@ -93,5 +105,83 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Kos tidak ditemukan.'), findsOneWidget);
+  });
+
+  testWidgets('filter area, prices, and facilities server-side', (
+    tester,
+  ) async {
+    final remote = FakeKosRemoteDataSource(listResult: [validJson]);
+    final repository = KosRepository(remote);
+
+    await tester.pumpWidget(testApp(repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('filter-panel')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('area-filter')), 'Singaraja');
+    await tester.enterText(find.byKey(const Key('min-price-filter')), '500000');
+    await tester.enterText(
+      find.byKey(const Key('max-price-filter')),
+      '1000000',
+    );
+    await tester.tap(find.byKey(const Key('facility-AC')));
+    await tester.tap(find.byKey(const Key('facility-WiFi')));
+    await tester.tap(find.byKey(const Key('apply-filter')));
+    await tester.pumpAndSettle();
+
+    expect(remote.lastFilters.normalizedArea, 'Singaraja');
+    expect(remote.lastFilters.minPrice, 500000);
+    expect(remote.lastFilters.maxPrice, 1000000);
+    expect(remote.lastFilters.normalizedFacilities, ['AC', 'WiFi']);
+  });
+
+  testWidgets('reset filter clears every criterion', (tester) async {
+    final remote = FakeKosRemoteDataSource(listResult: [validJson]);
+    final repository = KosRepository(remote);
+
+    await tester.pumpWidget(testApp(repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('filter-panel')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('area-filter')), 'Singaraja');
+    await tester.tap(find.byKey(const Key('facility-AC')));
+    await tester.tap(find.byKey(const Key('apply-filter')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('reset-filter')));
+    await tester.pumpAndSettle();
+
+    expect(remote.lastFilters.isEmpty, isTrue);
+  });
+
+  testWidgets('filter result can open detail', (tester) async {
+    final remote = FakeKosRemoteDataSource(listResult: [validJson]);
+    final repository = KosRepository(remote);
+
+    await tester.pumpWidget(testApp(repository));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('filter-panel')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('area-filter')), 'Singaraja');
+    await tester.tap(find.byKey(const Key('apply-filter')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Kos Melati'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Detail Kos'), findsOneWidget);
+  });
+
+  testWidgets('filter error state shows retry', (tester) async {
+    final repository = KosRepository(
+      FakeKosRemoteDataSource(throwOnList: true),
+    );
+
+    await tester.pumpWidget(testApp(repository));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tidak dapat terhubung ke Supabase.'), findsOneWidget);
+    expect(find.text('Coba lagi'), findsOneWidget);
   });
 }
