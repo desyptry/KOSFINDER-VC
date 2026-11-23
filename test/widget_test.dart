@@ -10,7 +10,7 @@ void main() {
     await tester.pumpWidget(const MyApp());
 
     expect(find.text('KosFinder'), findsOneWidget);
-    expect(find.textContaining('Undiksha'), findsOneWidget);
+    expect(find.text('Konfigurasi Supabase belum tersedia.'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('about-button')));
     await tester.pumpAndSettle();
