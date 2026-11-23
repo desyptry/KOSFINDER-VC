@@ -1,17 +1,16 @@
-# kosfinder_vc
+# KosFinder
 
-A new Flutter project.
+Aplikasi Flutter untuk mencari kos di sekitar Kampus Undiksha, Singaraja.
 
-## Getting Started
+## Menjalankan aplikasi
 
-This project is a starting point for a Flutter application.
+URL dan anon key Supabase dibaca melalui `--dart-define`. Gunakan nilai palsu
+berikut sebagai contoh:
 
-A few resources to get you started if this is your first Flutter project:
+```powershell
+flutter run -d chrome `
+  --dart-define=SUPABASE_URL=https://example.supabase.co `
+  --dart-define=SUPABASE_ANON_KEY=example-anon-key
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Jangan menaruh `service_role` key atau kredensial asli di source code.
