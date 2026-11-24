@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../features/auth/data/auth_repository.dart';
+import '../features/auth/models/auth_state.dart';
 import '../features/auth/presentation/auth_login_screen.dart';
 import '../features/auth/presentation/auth_register_screen.dart';
 import '../features/auth/presentation/owner_home_screen.dart';
@@ -48,7 +49,7 @@ class KosFinderApp extends StatelessWidget {
         '/about': (_) => const AboutScreen(),
         '/auth/login': (_) => const AuthLoginScreen(),
         '/auth/register': (_) => const AuthRegisterScreen(),
-        '/owner': (_) => const OwnerHomeScreen(),
+        '/owner': (_) => const _OwnerRouteGuard(),
       },
       builder: (context, child) =>
           _AppShellOverlay(navigatorKey: _navigatorKey, child: child!),
@@ -71,6 +72,45 @@ class KosFinderApp extends StatelessWidget {
       ],
       child: app,
     );
+  }
+}
+
+class _OwnerRouteGuard extends StatefulWidget {
+  const _OwnerRouteGuard();
+
+  @override
+  State<_OwnerRouteGuard> createState() => _OwnerRouteGuardState();
+}
+
+class _OwnerRouteGuardState extends State<_OwnerRouteGuard> {
+  bool _redirectScheduled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<AuthProvider?>();
+    if (provider?.session != null) {
+      return const OwnerHomeScreen();
+    }
+
+    if (provider == null || provider.state.status != AuthStatus.loading) {
+      _scheduleLoginRedirect();
+    }
+
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  void _scheduleLoginRedirect() {
+    if (_redirectScheduled) {
+      return;
+    }
+    _redirectScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/auth/login');
+      }
+    });
   }
 }
 

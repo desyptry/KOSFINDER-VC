@@ -226,4 +226,31 @@ void main() {
     expect(find.text('Masuk Pemilik'), findsOneWidget);
     expect(find.byKey(const Key('auth-submit-Masuk')), findsOneWidget);
   });
+
+  testWidgets('direct owner route redirects unauthenticated users to login', (
+    tester,
+  ) async {
+    gateway = FakeAuthGateway(user: null, session: null);
+    repository = AuthRepository.withGateway(gateway);
+
+    await tester.pumpWidget(KosFinderApp(authRepository: repository));
+    await tester.pump();
+    tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/owner');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Masuk Pemilik'), findsOneWidget);
+    expect(find.text('Kelola Kos'), findsNothing);
+  });
+
+  testWidgets('direct owner route opens owner page with an active session', (
+    tester,
+  ) async {
+    await tester.pumpWidget(KosFinderApp(authRepository: repository));
+    await tester.pump();
+    tester.state<NavigatorState>(find.byType(Navigator)).pushNamed('/owner');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Kelola Kos'), findsNWidgets(2));
+    expect(find.text('owner@example.com'), findsOneWidget);
+  });
 }
