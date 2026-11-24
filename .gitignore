@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .env
+supabase.local.json
 .DS_Store
 .atom/
 .build/

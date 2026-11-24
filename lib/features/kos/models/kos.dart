@@ -27,6 +27,9 @@ class Kos {
         json['created_at'] is! String) {
       throw const FormatException('Data kos dari Supabase tidak lengkap');
     }
+    if (totalRooms <= 0 || availableRooms < 0 || availableRooms > totalRooms) {
+      throw const FormatException('Jumlah kamar dari Supabase tidak valid');
+    }
 
     final facilitiesValue = json['facilities'];
     final facilities = facilitiesValue is List
@@ -34,6 +37,10 @@ class Kos {
         : <String>[];
 
     final status = json['status'];
+    final expectedStatus = availableRooms == 0 ? 'Penuh' : 'Tersedia';
+    if (status != expectedStatus) {
+      throw const FormatException('Status kos dari Supabase tidak valid');
+    }
     final createdAt = DateTime.tryParse(json['created_at'] as String);
     if (createdAt == null) {
       throw const FormatException('Tanggal kos dari Supabase tidak valid');
