@@ -22,7 +22,7 @@ class SupabaseKosRemoteDataSource implements KosRemoteDataSource {
     var query = client
         .from('kos')
         .select(
-          'id,owner_id,name,address_area,price_monthly,facilities,'
+          'id,name,address_area,price_monthly,facilities,'
           'total_rooms,available_rooms,status,created_at',
         );
 
@@ -56,7 +56,7 @@ class SupabaseKosRemoteDataSource implements KosRemoteDataSource {
     final response = await client
         .from('kos')
         .select(
-          'id,owner_id,name,address_area,price_monthly,facilities,'
+          'id,name,address_area,price_monthly,facilities,'
           'total_rooms,available_rooms,status,created_at',
         )
         .eq('id', id)

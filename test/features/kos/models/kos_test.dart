@@ -15,7 +15,20 @@ void main() {
     'created_at': '2026-11-23T11:55:02.848437+00:00',
   };
 
-  test('Kos.fromJson reads all public.kos fields', () {
+  test('Kos.fromJson reads public data without owner_id', () {
+    final publicJson = Map<String, dynamic>.from(validJson)
+      ..remove('owner_id');
+
+    final kos = Kos.fromJson(publicJson);
+
+    expect(kos.id, 'kos-1');
+    expect(kos.ownerId, isNull);
+    expect(kos.name, 'Kos Melati');
+    expect(kos.availableRooms, 4);
+    expect(kos.toJson(), isNot(contains('owner_id')));
+  });
+
+  test('Kos.fromJson retains owner_id when returned by owner query', () {
     final kos = Kos.fromJson(validJson);
 
     expect(kos.id, 'kos-1');

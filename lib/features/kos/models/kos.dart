@@ -1,7 +1,7 @@
 class Kos {
   const Kos({
     required this.id,
-    required this.ownerId,
+    this.ownerId,
     required this.name,
     required this.addressArea,
     required this.priceMonthly,
@@ -16,12 +16,13 @@ class Kos {
     final price = json['price_monthly'];
     final totalRooms = json['total_rooms'];
     final availableRooms = json['available_rooms'];
+    final ownerId = json['owner_id'];
 
     if (price is! num ||
         totalRooms is! int ||
         availableRooms is! int ||
         json['id'] is! String ||
-        json['owner_id'] is! String ||
+        (ownerId != null && ownerId is! String) ||
         json['name'] is! String ||
         json['address_area'] is! String ||
         json['created_at'] is! String) {
@@ -48,7 +49,7 @@ class Kos {
 
     return Kos(
       id: json['id'] as String,
-      ownerId: json['owner_id'] as String,
+      ownerId: ownerId as String?,
       name: json['name'] as String,
       addressArea: json['address_area'] as String,
       priceMonthly: price.toInt(),
@@ -61,7 +62,7 @@ class Kos {
   }
 
   final String id;
-  final String ownerId;
+  final String? ownerId;
   final String name;
   final String addressArea;
   final int priceMonthly;
@@ -74,7 +75,7 @@ class Kos {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'owner_id': ownerId,
+      if (ownerId != null) 'owner_id': ownerId,
       'name': name,
       'address_area': addressArea,
       'price_monthly': priceMonthly,

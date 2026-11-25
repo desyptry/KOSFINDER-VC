@@ -41,7 +41,6 @@ class FakeKosRemoteDataSource implements KosRemoteDataSource {
 void main() {
   final validJson = <String, dynamic>{
     'id': 'kos-1',
-    'owner_id': 'owner-1',
     'name': 'Kos Melati',
     'address_area': 'Singaraja',
     'price_monthly': 900000,
