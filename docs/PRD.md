@@ -8,7 +8,7 @@ fasilitas, serta ketersediaan kamar; pemilik juga sulit memperbarui jumlah
 kamar yang tersedia.
 
 Tujuan versi 1:
-- Pencari dapat menemukan kos berdasarkan wilayah/radius, harga, dan
+- Pencari dapat menemukan kos berdasarkan wilayah/area, harga, dan
   fasilitas tanpa membuat akun.
 - Setiap kos menampilkan harga per bulan, fasilitas, jumlah kamar tersedia,
   dan status ketersediaan.
@@ -26,7 +26,7 @@ Tujuan versi 1:
 
 ### Masuk
 - Aplikasi Android Flutter dengan backend Supabase.
-- Daftar kos publik, pencarian nama wilayah dan radius, filter harga serta
+- Daftar kos publik, pencarian nama wilayah/area, filter harga serta
   fasilitas, dan detail kos.
 - Registrasi dan masuk pemilik dengan email + password tanpa verifikasi email.
 - Pemilik menambah, mengubah, dan menghapus kos miliknya sendiri.
@@ -64,7 +64,7 @@ pemilik, upload foto, peta, dan fitur lain di luar daftar scope versi 1.
 agar dapat membandingkan pilihan di sekitar Undiksha.**
 
 - **US01-AC1:** Given data kos tersedia, When pencari membuka daftar dan
-  menerapkan wilayah/radius, harga, atau fasilitas, Then hanya kos yang
+  menerapkan wilayah/area, harga, atau fasilitas, Then hanya kos yang
   sesuai kriteria yang ditampilkan.
 - **US01-AC2:** Given tidak ada kos atau hasil filter kosong, When pencari
   membuka atau menyaring daftar, Then aplikasi menampilkan keadaan kosong
@@ -136,7 +136,6 @@ publik tidak memuat kos yang sudah tidak saya kelola.**
 
 ## Pertanyaan yang masih ambigu
 
-- Pilihan radius dan nilai radius default untuk pencarian belum ditentukan.
 - Daftar fasilitas yang tersedia serta apakah fasilitas dipilih dari daftar
   tetap atau diisi sebagai teks belum ditentukan.
 - Format alamat/area yang wajib diisi belum ditentukan.

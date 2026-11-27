@@ -1,0 +1,26 @@
+# Rencana Task KosFinder
+
+Urutan task mengikuti vertical slice. Status di bawah mencatat implementasi
+T01–T12 yang telah selesai. Pengujian manual terdahulu dilakukan melalui
+Flutter Web di Chrome, bukan HP/emulator; lihat `docs/test-plan.md` untuk
+ringkasan hasil dan batas verifikasinya.
+
+| ID | Tujuan | Story dan AC terkait | File yang boleh diubah | Cara menguji | Status |
+|---|---|---|---|---|---|
+| **T01** | Menyiapkan shell Flutter, konfigurasi `--dart-define`, dependency Provider/Supabase, dan navigasi dasar publik. | Dasar untuk **US01, US02**; About wajib menampilkan identitas pada `AGENTS.md`. | `pubspec.yaml`, `lib/main.dart`, `lib/app/**`, `lib/core/**` | Jalankan `flutter analyze`, `flutter test`, lalu `flutter run` dan buka layar awal/About. | Selesai |
+| **T02** | Menyediakan model kos dan repository untuk membaca daftar serta detail dari Supabase. | **US01-AC1–AC3**, **US02-AC1–AC3**. | `lib/features/kos/models/**`, `lib/features/kos/data/**`, `lib/core/config/**`, `test/features/kos/**` | Dengan data uji, baca daftar/detail; uji data kosong, kos tidak ditemukan, dan koneksi gagal. | Selesai |
+| **T03** | Membuat layar Daftar Kos dan Detail Kos publik tanpa login. | **US01-AC1–AC3**, **US02-AC1–AC3**. | `lib/features/kos/presentation/**`, `lib/app/**`, `test/features/kos/**` | Jalankan aplikasi; buka daftar, detail, data kosong, dan simulasi kegagalan koneksi. Implementasi slice selesai; pengujian manual sebelumnya melalui Flutter Web di Chrome. | Selesai |
+| **T04** | Menambahkan query filter server-side untuk wilayah, harga, dan fasilitas dengan state filter. | **US01-AC1**, **US01-AC2**, **US01-AC3**. | `lib/features/kos/data/**`, `lib/features/kos/providers/**`, `test/features/kos/**` | Uji tiap filter terhadap data uji dan pastikan hasil kosong serta error koneksi ditampilkan. Implementasi selesai; hasil query database sungguhan tidak dibuktikan oleh unit test. | Selesai |
+| **T05** | Menambahkan kontrol filter pada Daftar Kos dan mempertahankan hasil filter saat memuat ulang. | **US01-AC1–AC3**. | `lib/features/kos/presentation/**`, `lib/features/kos/providers/**`, `test/features/kos/**` | Gunakan filter wilayah/area, harga, fasilitas, reset filter, hasil kosong, dan koneksi gagal. Implementasi slice selesai; pengujian manual sebelumnya melalui Flutter Web di Chrome. | Selesai |
+| **T06** | Menyiapkan repository dan state autentikasi email/password tanpa verifikasi email. | **US03-AC1–AC3**. | `lib/features/auth/data/**`, `lib/features/auth/models/**`, `lib/core/config/**`, `test/features/auth/**`, `lib/features/auth/providers/**` | Uji daftar valid, login valid, kredensial kosong/salah, akun duplikat, dan koneksi gagal. | Selesai |
+| **T07** | Membuat layar Daftar/Masuk dan navigasi sesi pemilik. | **US03-AC1–AC3**. | `lib/features/auth/presentation/**`, `lib/app/**`, `test/features/auth/**` | Daftar dan masuk, pastikan pencari tetap dapat melihat daftar tanpa login, dan cek error. Implementasi slice selesai; pengujian manual sebelumnya melalui Flutter Web di Chrome. | Selesai |
+| **T08** | Membuat daftar kos milik pemilik dan form tambah/edit dengan validasi dasar. | **US04-AC1–AC4**. | `lib/features/owner/presentation/**`, `lib/features/owner/providers/**`, `test/features/owner/**` | Uji form valid, field wajib, angka harga/kamar, dan kegagalan koneksi saat menyimpan. | Selesai |
+| **T09** | Menambahkan operasi insert/update repository dengan RLS dan menampilkan kos baru pada daftar publik. | **US04-AC1**, **US04-AC4**, **US04-AC5**. | `lib/features/owner/data/**`, `lib/features/kos/data/**`, `supabase/migrations/**`, `test/features/owner/**` | CRUD owner dan alur publik telah diuji manual di Chrome. UPDATE lintas pemilik ditolak melalui aplikasi dan UPDATE langsung REST ditolak RLS (HTTP 200, respons `[]`, data tidak berubah). | Selesai |
+| **T10** | Menambahkan konfirmasi dan operasi hapus kos milik sendiri. | **US05-AC1–AC3**. | `lib/features/owner/presentation/**`, `lib/features/owner/data/**`, `test/features/owner/**` | Hapus milik sendiri diuji manual di Chrome; DELETE lintas pemilik ditolak melalui aplikasi. DELETE langsung REST belum diverifikasi. | Selesai |
+| **T11** | Menegakkan validasi jumlah kamar dan status otomatis di database serta model aplikasi. | **US02-AC2**, **US04-AC2–AC3**. | `supabase/migrations/**`, `lib/features/kos/models/**`, `lib/features/owner/**`, `test/features/owner/**` | Aturan kamar/status diperiksa pada Supabase dengan transaksi `BEGIN`/`ROLLBACK`; migration 002 tidak diterapkan karena aturan sudah tersedia dari migration 001. Pengujian manual device tidak dilakukan. | Selesai |
+| **T12** | Menampilkan dan memperbarui jumlah kamar tersedia dari alur pemilik ke daftar/detail publik. | **US02-AC1–AC2**, **US04-AC1–AC4**. | `lib/features/kos/**`, `lib/features/owner/**`, `test/features/kos/**`, `test/features/owner/**` | Perubahan ketersediaan oleh owner dan pembaruan tampilan publik diuji manual melalui Flutter Web di Chrome. Pengujian HP/emulator tidak dilakukan. | Selesai |
+
+Catatan verifikasi: seluruh hasil manual yang dilaporkan berasal dari Flutter
+Web di Chrome, bukan HP/emulator. Ringkasan 27 Pass dan 1 Partial dicatat pada
+`docs/test-plan.md`; ini tidak berarti seluruh pengujian device atau
+integration test otomatis telah lulus.

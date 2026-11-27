@@ -21,7 +21,7 @@ Dependensi mengalir satu arah agar logika UI, state, dan akses data terpisah.
 
 ## 2. Layar dan alur navigasi
 
-- **Daftar Kos:** layar awal publik → filter wilayah/radius, harga, fasilitas
+- **Daftar Kos:** layar awal publik → filter wilayah/area, harga, fasilitas
   → **Detail Kos** (**US01**).
 - **Detail Kos:** menampilkan data kamar dan status otomatis (**US02**).
 - **Masuk / Daftar Pemilik:** dari aksi pemilik → setelah berhasil ke
@@ -58,10 +58,6 @@ terautentikasi boleh membaca kos. Hanya pengguna terautentikasi yang boleh
 menambah kos dengan `owner_id = auth.uid()`, serta mengubah atau menghapus
 baris yang `owner_id`-nya sama dengan `auth.uid()`. RLS menolak akses pemilik
 lain. Constraint database menegakkan aturan jumlah kamar.
-
-Radius membutuhkan koordinat atau definisi radius berbasis area; bentuk data
-dan cara pengisiannya masih menjadi pertanyaan PRD, sehingga belum ditambah
-ke skema ini.
 
 ## 4. Konfigurasi
 
